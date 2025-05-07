@@ -1,5 +1,5 @@
 ﻿using Framework.Helpers;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Framework
 {
