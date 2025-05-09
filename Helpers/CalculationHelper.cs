@@ -6,25 +6,32 @@ using System.Threading.Tasks;
 
 namespace Framework.Helpers
 {
-    internal class CalculationHelper
+    public class CalculationHelper
     {
-        //public int Methods1(int x, int y)
-        //{
-        //   int result = x + y;
-        //    return result;
-        //}
+        public int Method1(int x, int y)
+        {
+            return x + y;
+        }
 
-        //public int Methods2(int logMessage)
-        //{
-        //    int logMessage = 
-        //}
+        public int Method1(int x, int y, string logMessage = "Результат сложения: ")
+        {
+            int result = x + y;
+            Console.WriteLine($"{logMessage} {result}");
+            return result;
+        }
 
-        //public static int Methods3(int a, int b)
-        //{
-        //    int result = a - b;
-        //    return result; 
-        //}
+        public static int Method2(int a, int b)
+        {
+            return a - b;
+        }
 
+        public static int Method2(int a, int b, string logMessage = "Результат вычитания: ")
+        {
+            int result = a - b;
+            Console.WriteLine($"{logMessage} {result}");
+            return result;
+        }
 
+        
     }
 }
