@@ -27,16 +27,17 @@ namespace Framework.Helpers
             }
             catch (NullReferenceException ex)
             {
-
+                Console.Write(ex.Message);
+                throw;
             }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                Console.WriteLine("Блок finally");
-            }
+            return param;
+        }
+        public static string GenerateStringStatic2()
+        {
+            string param = null;
+            Console.WriteLine("Блок try");
+            param = "asdf";
+            Console.WriteLine(param);
             return param;
         }
     }
