@@ -13,7 +13,7 @@ namespace Framework.Helpers
             return x + y;
         }
 
-        public int Method1(int x, int y, string logMessage = "Результат сложения: ")
+        public int Method1(int x, int y, string logMessage)
         {
             int result = x + y;
             Console.WriteLine($"{logMessage} {result}");

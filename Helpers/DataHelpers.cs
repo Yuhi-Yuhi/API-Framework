@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Framework.Helpers
 {
-    public class DataHelpers
+    public class DataHelpers 
     {
         public string GenerateString()
         {
