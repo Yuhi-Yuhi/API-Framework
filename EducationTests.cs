@@ -1,15 +1,16 @@
 ﻿using Framework.Helpers;
 ﻿using NUnit.Framework;
+using Serilog;
 
 namespace Framework
 {
     [TestFixture]
-    public class EducationTests
+    public class EducationTests : TestBase
     {
         [Test]
-        public void Test1()
+        public void HelloWorldTest()
         {
-            Console.WriteLine("Hello World!");
+            Log.Information("Hello World!");
         }
 
         [Test]

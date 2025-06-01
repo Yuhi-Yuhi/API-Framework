@@ -1,13 +1,15 @@
 ﻿using System.Net.Http;
 using System.Text.Json;
 using Framework.Models;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
+using Serilog;
 
 
 namespace Framework
 {
     [TestFixture]
-    public class EpisodesTests
+    public class EpisodesTests : TestBase
     {
         private HttpClient httpClient;
         private string url;
@@ -16,17 +18,20 @@ namespace Framework
         protected void Initialize()
         {
             url = Config.BaseUrl;
-            Console.WriteLine("Our endpoint: " + url);
+            Log.Information("Our endpoint: " + url);
             httpClient = new HttpClient();
         }
 
         [Test]
         public async Task GetEpisodes()
         {
+            Log.Information("Test GetEpisodes was started!");
+
             url = url + "episodes";
             var response = await httpClient.GetAsync(url);
-            Console.WriteLine("Status code: " + response.StatusCode);
-            Console.WriteLine("Response content: " + response.Content);
+            Log.Information($"{url}");
+            Log.Information("Status code: " + response.StatusCode);
+            Log.Information("Response content: " + response.Content);
 
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json);
@@ -37,18 +42,19 @@ namespace Framework
 
             var name = firstEpisode.GetProperty("name").GetString();
             var number = firstEpisode.GetProperty("number").GetInt32();
-            Console.WriteLine("Name: " + name);
-            Console.WriteLine("Number: " + number);
+            Log.Information("Name: " + name);
+            Log.Information("Number: " + number);
         }
 
         [Test]
         public async Task GetEpisodeId()
         {
+            Log.Information("Test GetEpisodeId was started!");
             url = url + "episodes/5";
             var response = await httpClient.GetAsync(url);
-            Console.WriteLine($"{url}");
-            Console.WriteLine("Status code: " + response.StatusCode);
-            Console.WriteLine("Response content: " + response.Content);
+            Log.Information($"{url}");
+            Log.Information("Status code: " + response.StatusCode);
+            Log.Information("Response content: " + response.Content);
 
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json);
@@ -58,9 +64,9 @@ namespace Framework
             var name = root.GetProperty("name").GetString();
             var duration = root.GetProperty("duration").GetInt32();
 
-            Console.WriteLine("Id: " + id);
-            Console.WriteLine("Name: " + name);
-            Console.WriteLine("Duration: " + duration);
+            Log.Information("Id: " + id);
+            Log.Information("Name: " + name);
+            Log.Information("Duration: " + duration);
 
             Assert.Multiple(() =>
             {
@@ -68,12 +74,6 @@ namespace Framework
                 Assert.That(name, Is.EqualTo("Fear of a Bot Planet"), "Episode name is not correct!");
                 Assert.That(duration, Is.EqualTo(1800), "Episode duration is not correct!");
             });
-        }
-
-        [TearDown]
-        protected void Uninitialize()
-        {
-            Console.WriteLine("Testend");
         }
     }
 }
