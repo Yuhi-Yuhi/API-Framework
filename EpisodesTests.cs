@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http;
+using System.Text.Json;
 using Framework.Models;
 using NUnit.Framework;
 
@@ -8,21 +9,22 @@ namespace Framework
     [TestFixture]
     public class EpisodesTests
     {
-        private HttpClient _httpClient;
+        private HttpClient httpClient;
+        private string url;
 
         [SetUp]
         protected void Initialize()
         {
-            string url = Config.BaseUrl;
+            url = Config.BaseUrl;
             Console.WriteLine("Our endpoint: " + url);
-            _httpClient = new HttpClient();
+            httpClient = new HttpClient();
         }
 
         [Test]
         public async Task GetEpisodes()
         {
-            string url = "https://futuramaapi.com/api/episodes";
-            var response = await _httpClient.GetAsync(url);
+            url = url + "episodes";
+            var response = await httpClient.GetAsync(url);
             Console.WriteLine("Status code: " + response.StatusCode);
             Console.WriteLine("Response content: " + response.Content);
 
@@ -37,21 +39,35 @@ namespace Framework
             var number = firstEpisode.GetProperty("number").GetInt32();
             Console.WriteLine("Name: " + name);
             Console.WriteLine("Number: " + number);
-
         }
 
         [Test]
-        public void ConfigurationTest()
+        public async Task GetEpisodeId()
         {
-            var episode = Episode.GetDefaultEpisode();
-            Console.WriteLine(episode.name);
-        }
+            url = url + "episodes/5";
+            var response = await httpClient.GetAsync(url);
+            Console.WriteLine($"{url}");
+            Console.WriteLine("Status code: " + response.StatusCode);
+            Console.WriteLine("Response content: " + response.Content);
 
-        [Test]
-        public void ConfigurationTest2()
-        {
-            var episode = Episode.GetDefaultEpisode();
-            Console.WriteLine(episode.name);
+            var json = await response.Content.ReadAsStringAsync();
+            var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            var id = root.GetProperty("id").GetInt32();
+            var name = root.GetProperty("name").GetString();
+            var duration = root.GetProperty("duration").GetInt32();
+
+            Console.WriteLine("Id: " + id);
+            Console.WriteLine("Name: " + name);
+            Console.WriteLine("Duration: " + duration);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(id, Is.EqualTo(5), "Episode id is not correct!");
+                Assert.That(name, Is.EqualTo("Fear of a Bot Planet"), "Episode name is not correct!");
+                Assert.That(duration, Is.EqualTo(1800), "Episode duration is not correct!");
+            });
         }
 
         [TearDown]
