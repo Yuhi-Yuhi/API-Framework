@@ -1,10 +1,7 @@
-﻿using System.Net.Http;
+﻿using System.Net;
 using System.Text.Json;
-using Framework.Models;
-using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Serilog;
-
 
 namespace Framework
 {
@@ -44,6 +41,55 @@ namespace Framework
             var number = firstEpisode.GetProperty("number").GetInt32();
             Log.Information("Name: " + name);
             Log.Information("Number: " + number);
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(151)]
+        public async Task GetEpisodeIdNegativeCases(int episodeId)
+        {
+            url = url + $"episodes/{episodeId}";
+            var response = await httpClient.GetAsync(url);
+
+            Log.Information($"Request URL: {url}");
+            Log.Information($"Status code: {response.StatusCode}");
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "Status code was incorrect!");
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(70)]
+        [TestCase(149)]
+        [TestCase(150)]
+        public async Task GetEpisodeIdPositiveCases(int episodeId)
+        {
+            url = url + $"episodes/{episodeId}";
+            var response = await httpClient.GetAsync(url);
+
+            Log.Information($"Request URL: {url}");
+            Log.Information($"Status code: {response.StatusCode}");
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "Status code was incorrect!");
+        }
+
+        [TestCase(-1, HttpStatusCode.NotFound)]
+        [TestCase(0, HttpStatusCode.NotFound)]
+        [TestCase(151, HttpStatusCode.NotFound)]
+        [TestCase(1, HttpStatusCode.OK)]
+        [TestCase(2, HttpStatusCode.OK)]
+        [TestCase(70, HttpStatusCode.OK)]
+        [TestCase(149, HttpStatusCode.OK)]
+        [TestCase(150, HttpStatusCode.OK)]
+        public async Task GetEpisodeIdBoundaryValuesTest(int episodeId, HttpStatusCode statusCode)
+        {
+            url = url + $"episodes/{episodeId}";
+            var response = await httpClient.GetAsync(url);
+
+            Log.Information($"Request URL: {url}");
+            Log.Information($"Status code: {response.StatusCode}");
+
+            Assert.That(response.StatusCode, Is.EqualTo(statusCode), "Status code was incorrect!");
         }
 
         [Test]
