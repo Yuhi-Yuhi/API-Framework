@@ -8,9 +8,11 @@ namespace Framework
     public class EducationTests : TestBase
     {
         [Test]
+        [Retry(2)]
         public void HelloWorldTest()
         {
             Log.Information("Hello World!");
+            Assert.That(1.Equals(2));
         }
 
         [Test]

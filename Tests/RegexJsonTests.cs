@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Serilog;
 
@@ -22,6 +21,8 @@ namespace Framework
         }";
 
         [Test]
+        [Repeat(2)]
+        [Category("Smoke")]
         public void FindPhoneNumber()
         {
             string pattern = @"\+\d{1}-\d{3}-\d{3}-\d{4}";
@@ -29,6 +30,5 @@ namespace Framework
             Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
             Assert.That(match.Success, Is.True, $"Element was not found by specified regex: `{pattern}`");
         }
-
     }
 }
