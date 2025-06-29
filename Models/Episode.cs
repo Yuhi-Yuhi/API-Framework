@@ -2,33 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Framework.Models
 {
     public class Episode
     {
-        public required int id { get; set; }
-        public required string name { get; set; }
-        public required int nubmer { get; set; }
-        public required string productionCode { get; set; }
-        public required string? airDate { get; set; }
-        public required int? duration { get; set; }
-        public required DateTime createdAt { get; set; } 
-        public required string broadcastCode { get; set; }
+        [JsonPropertyName("id")]
+        public required int Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public required string Name { get; set; }
+
+        [JsonPropertyName("number")]
+        public required int Number { get; set; }
+
+        [JsonPropertyName("productionCode")]
+        public required string ProductionCode { get; set; }
+
+        [JsonPropertyName("airDate")]
+        public required string? AirDate { get; set; }
+
+        [JsonPropertyName("duration")]
+        public required int? Duration { get; set; }
+
+        [JsonPropertyName("createdAt")]
+        public required DateTime CreatedAt { get; set; }
+
+        [JsonPropertyName("broadcastCode")]
+        public required string BroadcastCode { get; set; }
 
         public static Episode GetDefaultEpisode()
         {
             return new Episode
             {
-                id = 1,
-                name = "Space Pilot 3000",
-                nubmer = 1,
-                productionCode = "1ACV01",
-                airDate = "1999-03-28",
-                duration = 1800,
-                createdAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
-                broadcastCode = "S01E01"
+                Id = 1,
+                Name = "Space Pilot 3000",
+                Number = 1,
+                ProductionCode = "1ACV01",
+                AirDate = "1999-03-28",
+                Duration = 1800,
+                CreatedAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
+                BroadcastCode = "S01E01"
             };
         }
 
@@ -36,14 +52,14 @@ namespace Framework.Models
         {
             return new Episode
             {
-                id = 1,
-                name = "Space Pilot 3000",
-                nubmer = 1,
-                productionCode = "1ACV01",
-                airDate = "1999-03-28",
-                duration = 1800,
-                createdAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
-                broadcastCode = "S01E01"
+                Id = 1,
+                Name = "Space Pilot 3000",
+                Number = 1,
+                ProductionCode = "1ACV01",
+                AirDate = "1999-03-28",
+                Duration = 1800,
+                CreatedAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
+                BroadcastCode = "S01E01"
             };
         }
 
@@ -51,14 +67,14 @@ namespace Framework.Models
         {
             return new Episode
             {
-                id = 5,
-                name = "Fear of a Bot Planet",
-                nubmer = 5,
-                productionCode = "1ACV05",
-                airDate = "1999-04-20",
-                duration = 1800,
-                createdAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
-                broadcastCode = "S01E05"
+                Id = 5,
+                Name = "Fear of a Bot Planet",
+                Number = 5,
+                ProductionCode = "1ACV05",
+                AirDate = "1999-04-20",
+                Duration = 1800,
+                CreatedAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
+                BroadcastCode = "S01E05"
             };
         }
 
@@ -66,14 +82,14 @@ namespace Framework.Models
         {
             return new Episode
             {
-                id = 27,
-                name = "Mother's Day",
-                nubmer = 19,
-                productionCode = "2ACV14",
-                airDate = "2000-05-14",
-                duration = 1800,
-                createdAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
-                broadcastCode = "S02E19"
+                Id = 27,
+                Name = "Mother's Day",
+                Number = 19,
+                ProductionCode = "2ACV14",
+                AirDate = "2000-05-14",
+                Duration = 1800,
+                CreatedAt = DateTime.Parse("2023-12-21T21:04:02.717418Z"),
+                BroadcastCode = "S02E19"
             };
         }
     }
