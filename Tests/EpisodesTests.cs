@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text.Json;
-using System.Xml.Linq;
 using Framework.Common;
 using Framework.Models;
 using Framework.TestData;
@@ -27,7 +26,7 @@ namespace Framework
 
         [Test]
         [Explicit("Test should be executed only localy from VS.")]
-        public async Task GetEpisodes() // переделать !
+        public async Task GetEpisodes()
         {
             Log.Information("Test GetEpisodes was started!");
 
