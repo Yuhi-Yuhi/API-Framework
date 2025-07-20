@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 using Framework.Models;
 
 namespace Framework.Common
@@ -31,8 +32,19 @@ namespace Framework.Common
             {
                 throw new JsonException("Failed to deserialize episode");
             }
-            
+
             return episode;
+        }
+
+        public async Task<User> CreateUserAsync(User user)
+        {
+            var requestUrl = $"{_baseUrl}/users";
+
+            var response = await _httpClient.PostAsJsonAsync(requestUrl, user);
+            response.EnsureSuccessStatusCode();
+
+            var createdUser = await response.Content.ReadFromJsonAsync<User>();
+            return createdUser ?? throw new Exception("User creation failed");
         }
     }
 }
