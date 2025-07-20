@@ -30,5 +30,78 @@ namespace Framework
             Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
             Assert.That(match.Success, Is.True, $"Element was not found by specified regex: `{pattern}`");
         }
+
+        [Test]
+        public void FindUserId()
+        {
+            string pattern = @"([A-Z]\d{2}-\d{3}-[A-Z]\d)";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"userId was not found by specified regex: `{pattern}`");
+        }
+
+        [Test]
+        public void FindEmail()
+        {
+            string pattern = @"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"email was not found by specified regex: `{pattern}`");
+        }
+
+        [Test]
+        public void FindIpAddress()
+        {
+            string pattern = @"(\d{1,3}\.\d{1,3}\.\d{1}\.\d{1,3})";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"ip was not found by specified regex: `{pattern}`");
+        }
+
+        [Test]
+        public void FindMacAddress()
+        {
+            string pattern = @"([0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5})";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"mac was not found by specified regex: `{pattern}`");
+        }
+
+        [Test]
+        public void FindGuid()
+        {
+            string pattern = @"([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"guid was not found by specified regex: `{pattern}`");
+        }
+
+        [Test]
+        public void FindCreatedAt()
+        {
+            string pattern = @"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"createdAt was not found by specified regex: `{pattern}`");
+        }
+
+        [Test]
+        public void FindDeviceId()
+        {
+            string pattern = @"(DEV-\d{5}-[A-Z]{3})";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"deviceId was not found by specified regex: `{pattern}`");
+        }
+
+        [Test]
+        public void FindUrl()
+        {
+            string pattern = @"(https?://[a-zA-Z0-9./_-]+)";
+            Match match = Regex.Match(json, pattern);
+            Log.Information(match.Success ? $"Found: {match.Value}" : "Was not found");
+            Assert.That(match.Success, Is.True, $"url was not found by specified regex: `{pattern}`");
+        }
     }
 }
+
