@@ -153,19 +153,5 @@ namespace Framework
                 Assert.That(actualEpisode.BroadcastCode, Is.EqualTo(expectedEpisode.BroadcastCode), "Episode broadcastCode is not correct!");
             });
         }
-
-        [Test]
-        [TestCaseSource(typeof(EpisodeTestData), nameof(EpisodeTestData.GetEpisodes))]
-        public async Task GetEpisode23423423(Episode expectedEpisode)
-        {
-            var actualEpisode = await apiClient.GetEpisodeByIdAsync(expectedEpisode.Id);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(actualEpisode.Id, Is.EqualTo(expectedEpisode.Id), "Episode id is not correct!");
-                Assert.That(actualEpisode.Name, Is.EqualTo(expectedEpisode.Name), "Episode name is not correct!");
-                Assert.That(actualEpisode.Number, Is.EqualTo(expectedEpisode.Number), "Episode number is not correct!");
-            });
-        }
     }
 }

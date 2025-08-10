@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Framework.Common;
-using Framework.Models;
-using Framework.TestData;
+﻿using Framework.Common;
 using NUnit.Framework;
 using Serilog;
+using User = Framework.Models.User;
 
 namespace Framework.Tests
 {
@@ -36,7 +29,7 @@ namespace Framework.Tests
                 MiddleName = "string",
                 Email = "vasya007@example.com",
                 Username = "vasya007",
-                Password = "********",
+                Password = "123123",
                 IsSubscribed = true
             };
 

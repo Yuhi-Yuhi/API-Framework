@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace Framework.Models
 {
@@ -19,7 +14,7 @@ namespace Framework.Models
         public required string Surname { get; set; }
 
         [JsonPropertyName("middleName")]
-        public required string MiddleName { get; set; }
+        public string MiddleName { get; set; }
 
         [JsonPropertyName("email")]
         public required string Email { get; set; }
@@ -31,7 +26,7 @@ namespace Framework.Models
         public required string Password { get; set; }
 
         [JsonPropertyName("isSubscribed")]
-        public required bool IsSubscribed { get; set; }
+        public bool IsSubscribed { get; set; }
 
         [JsonPropertyName("isConfirmed")]
         public bool IsConfirmed { get; set; }
