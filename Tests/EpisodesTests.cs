@@ -6,7 +6,7 @@ using Framework.TestData;
 using NUnit.Framework;
 using Serilog;
 
-namespace Framework
+namespace Framework.Tests
 {
     [TestFixture]
     public class EpisodesTests : TestBase

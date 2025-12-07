@@ -1,10 +1,11 @@
-﻿using Framework.Models;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Serilog;
+using Allure.NUnit;
 
 namespace Framework
 {
+    [AllureNUnit]
     public abstract class TestBase
     {
         [OneTimeSetUp]
@@ -19,24 +20,27 @@ namespace Framework
                 .ReadFrom.Configuration(configuration)
                 .Enrich.FromLogContext()
                 .CreateLogger();
+
+            Log.Information("=== TEST RUN STARTED ===");
         }
 
         [SetUp]
         public void Setup()
         {
-            Log.Information("Test was started!");
+            Log.Information($"START TEST: {TestContext.CurrentContext.Test.Name}");
         }
 
         [TearDown]
         public void Teardown()
         {
-            Log.Information("Test was finished!");
+            Log.Information($"TEST FINISHED WITH STATUS: {TestContext.CurrentContext.Result.Outcome.Status}");
         }
 
         [OneTimeTearDown]
         public void GlobalTeardown()
         {
-
+            Log.Information("=== TEST RUN FINISHED ===");
+            Log.CloseAndFlush();
         }
     }
 }
