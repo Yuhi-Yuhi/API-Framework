@@ -1,6 +1,5 @@
-﻿using System.Net;
-using System.Text.Json;
-using Framework.Common;
+﻿using Framework.Common;
+using Framework.Common.Http;
 using Framework.Models;
 using Framework.TestData;
 using NUnit.Framework;
@@ -11,56 +10,47 @@ namespace Framework.Tests
     [TestFixture]
     public class EpisodesTests : TestBase
     {
-        private HttpClient httpClient;
         private FuturamaApiClient apiClient;
-        private string url;
 
         [SetUp]
-        protected void Initialize()
+        public void Initialize()
         {
-            url = Config.BaseUrl;
-            Log.Information("Our endpoint: " + url);
-            httpClient = new HttpClient();
-            apiClient = new FuturamaApiClient(url);
+            var httpClient = HttpClientProvider.Create();
+            apiClient = new FuturamaApiClient(httpClient);
+
+            Log.Information("Running tests against {BaseUrl}", httpClient.BaseAddress);
         }
 
         [Test]
-        [Explicit("Test should be executed only localy from VS.")]
+        [Explicit("Test should be executed only locally from VS.")]
         public async Task GetEpisodes()
         {
             Log.Information("Test GetEpisodes was started!");
 
-            url = $"{url}/episodes";
-            var response = await httpClient.GetAsync(url);
-            Log.Information($"{url}");
-            Log.Information("Status code: " + response.StatusCode);
-            Log.Information("Response content: " + response.Content);
+            // API не имеет отдельного метода получения списка,
+            // поэтому используем HttpClient напрямую ТОЛЬКО здесь
+            var httpClient = HttpClientProvider.Create();
+            var response = await httpClient.GetAsync("episodes");
+
+            Assert.That(response.IsSuccessStatusCode, Is.True, "Episodes request failed");
 
             var json = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-            var items = root.GetProperty("items");
 
-            var firstEpisode = items[0];
+            Log.Information("Status code: {StatusCode}", response.StatusCode);
+            Log.Information("Response body: {Body}", json);
 
-            var name = firstEpisode.GetProperty("name").GetString();
-            var number = firstEpisode.GetProperty("number").GetInt32();
-            Log.Information("Name: " + name);
-            Log.Information("Number: " + number);
+            Assert.That(json, Is.Not.Null.And.Not.Empty);
         }
 
         [TestCase(-1)]
         [TestCase(0)]
         [TestCase(151)]
-        public async Task GetEpisodeIdNegativeCases(int episodeId)
+        public void GetEpisodeIdNegativeCases(int episodeId)
         {
-            url = $"{url}/episodes/{episodeId}";
-            var response = await httpClient.GetAsync(url);
+            var ex = Assert.ThrowsAsync<HttpRequestException>(
+                async () => await apiClient.GetEpisodeByIdAsync(episodeId));
 
-            Log.Information($"Request URL: {url}");
-            Log.Information($"Status code: {response.StatusCode}");
-
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "Status code was incorrect!");
+            Log.Information("Negative case for episodeId={EpisodeId}. Exception: {Message}", episodeId, ex!.Message);
         }
 
         [TestCase(1)]
@@ -70,63 +60,34 @@ namespace Framework.Tests
         [TestCase(150)]
         public async Task GetEpisodeIdPositiveCases(int episodeId)
         {
-            url = $"{url}/episodes/{episodeId}";
-            var response = await httpClient.GetAsync(url);
-
-            Log.Information($"Request URL: {url}");
-            Log.Information($"Status code: {response.StatusCode}");
-
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "Status code was incorrect!");
-        }
-
-        [TestCase(0, HttpStatusCode.NotFound)]
-        [TestCase(1, HttpStatusCode.OK)]
-        [TestCase(2, HttpStatusCode.OK)]
-        [TestCase(70, HttpStatusCode.OK)]
-        [TestCase(149, HttpStatusCode.OK)]
-        [TestCase(150, HttpStatusCode.OK)]
-        [TestCase(151, HttpStatusCode.NotFound)]
-
-        public async Task GetEpisodeIdBoundaryValuesTest(int episodeId, HttpStatusCode statusCode)
-        {
-            url = $"{url}/episodes/{episodeId}";
-            var response = await httpClient.GetAsync(url);
-
-            Log.Information($"Request URL: {url}");
-            Log.Information($"Status code: {response.StatusCode}");
-
-            Assert.That(response.StatusCode, Is.EqualTo(statusCode), "Status code was incorrect!");
-        }
-
-        [Test]
-        [Ignore("Dublicated test. Should be removed.")]
-        public async Task GetEpisodeId()
-        {
-            Log.Information("Test GetEpisodeId was started!");
-            url = $"{url}/episodes/5";
-            var response = await httpClient.GetAsync(url);
-            Log.Information($"{url}");
-            Log.Information("Status code: " + response.StatusCode);
-            Log.Information("Response content: " + response.Content);
-
-            var json = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            var id = root.GetProperty("id").GetInt32();
-            var name = root.GetProperty("name").GetString();
-            var duration = root.GetProperty("duration").GetInt32();
-
-            Log.Information("Id: " + id);
-            Log.Information("Name: " + name);
-            Log.Information("Duration: " + duration);
+            var episode = await apiClient.GetEpisodeByIdAsync(episodeId);
 
             Assert.Multiple(() =>
             {
-                Assert.That(id, Is.EqualTo(5), "Episode id is not correct!");
-                Assert.That(name, Is.EqualTo("Fear of a Bot Planet"), "Episode name is not correct!");
-                Assert.That(duration, Is.EqualTo(1800), "Episode duration is not correct!");
+                Assert.That(episode, Is.Not.Null);
+                Assert.That(episode.Id, Is.EqualTo(episodeId));
             });
+        }
+
+        [TestCase(0, false)]
+        [TestCase(1, true)]
+        [TestCase(2, true)]
+        [TestCase(70, true)]
+        [TestCase(149, true)]
+        [TestCase(150, true)]
+        [TestCase(151, false)]
+        public async Task GetEpisodeIdBoundaryValuesTest(int episodeId, bool shouldExist)
+        {
+            if (shouldExist)
+            {
+                var episode = await apiClient.GetEpisodeByIdAsync(episodeId);
+                Assert.That(episode.Id, Is.EqualTo(episodeId));
+            }
+            else
+            {
+                Assert.ThrowsAsync<HttpRequestException>(
+                    async () => await apiClient.GetEpisodeByIdAsync(episodeId));
+            }
         }
 
         [Test]
@@ -135,11 +96,7 @@ namespace Framework.Tests
         [TestCaseSource(typeof(EpisodeTestData), nameof(EpisodeTestData.GetEpisodes))]
         public async Task GetEpisode(Episode expectedEpisode)
         {
-            url = $"{url}/episodes/{expectedEpisode.Id}";
-
-            var response = await httpClient.GetAsync(url);
-            var json = await response.Content.ReadAsStringAsync();
-            var actualEpisode = JsonSerializer.Deserialize<Episode>(json);
+            var actualEpisode = await apiClient.GetEpisodeByIdAsync(expectedEpisode.Id);
 
             Assert.Multiple(() =>
             {

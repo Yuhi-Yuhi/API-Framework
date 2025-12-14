@@ -1,4 +1,5 @@
 ﻿using Framework.Common;
+using Framework.Common.Http;
 using NUnit.Framework;
 using Serilog;
 using User = Framework.Models.User;
@@ -12,11 +13,12 @@ namespace Framework.Tests
         private string url;
 
         [SetUp]
-        protected void Initialize()
+        public void Initialize()
         {
-            url = Config.BaseUrl;
-            Log.Information("Our endpoint: " + url);
-            apiClient = new FuturamaApiClient(url);
+            var httpClient = HttpClientProvider.Create();
+            apiClient = new FuturamaApiClient(httpClient);
+
+            Log.Information("Running tests against {BaseUrl}", httpClient.BaseAddress);
         }
 
         [Test]
